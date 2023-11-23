@@ -7,6 +7,7 @@ export default defineComponent({
      return {
         play:  null,
         mudo:  null,
+        bar: 0,
      };
    },
    methods: {
@@ -26,7 +27,21 @@ export default defineComponent({
           }
         }
 
+
      },
+      progressBar() {
+        const video = document.querySelector('video')
+        const progressBar = document.getElementById('progress-bar')
+        let progress = (video.currentTime / video.duration) * 100;
+        this.bar = progress * 1.3
+
+        this.bar = Math.min(this.bar, 90);
+
+        if(this.bar <= 90 || progress >= 90){
+            let tempo = progress > 90 ? progress : this.bar
+            progressBar.style.width = tempo + "%"
+        }
+      }
    },
     mounted() {
       this.play = document.getElementById('play')
@@ -41,7 +56,7 @@ export default defineComponent({
 <template>
   <div class="flex justify-center items-center p-8">
     <div class="relative" @click="controls">
-      <video class="lg:h-96" autoplay muted >
+      <video class="lg:h-96" autoplay muted @timeupdate="progressBar">
         <source src="../assets/php.mp4" type="video/mp4">
           Your browser does not support the video tag.
       </video>
